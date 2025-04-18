@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import './global.css';
 import FormClient from './components/FormClient';
-import FormProduto from './components/FormProduto';
+import CadastroProduto from "./components/FormProduto";
 import ItensPage from './components/ItensPage';
-import Orcamento from './components/Orcamento';
+import OrcamentoPage from './components/OrcamentoPage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'client' | 'product' | 'items' | 'budget'>('client');
@@ -57,7 +57,7 @@ function App() {
             cursor: 'pointer'
           }}
         >
-          Cardápio de Produtos
+          Itens
         </button>
         <button 
           onClick={() => setCurrentPage('budget')}
@@ -73,10 +73,11 @@ function App() {
           Orçamento
         </button>
       </div>
-      {currentPage === 'client' ? <FormClient /> : 
-       currentPage === 'product' ? <FormProduto /> : 
-       currentPage === 'items' ? <ItensPage /> :
-       <Orcamento />}
+      
+      {currentPage === 'client' && <FormClient />}
+      {currentPage === 'product' && <CadastroProduto />}
+      {currentPage === 'items' && <ItensPage />}
+      {currentPage === 'budget' && <OrcamentoPage />}
     </div>
   );
 }

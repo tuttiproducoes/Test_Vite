@@ -24,6 +24,7 @@ const ItensPage = () => {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('café da manhã');
   const [editandoId, setEditandoId] = useState<number | null>(null);
   const [mostrarReceitaId, setMostrarReceitaId] = useState<number | null>(null);
+  const [editValues, setEditValues] = useState<Partial<Produto>>({});
 
   const categorias = [
     'café da manhã',
@@ -86,12 +87,41 @@ const ItensPage = () => {
   };
 
   const iniciarEdicao = (id: number) => {
-    setEditandoId(id);
+    const produto = produtosCadastrados.find(p => p.id === id);
+    if (produto) {
+      setEditValues({
+        nome: produto.nome,
+        descricao: produto.descricao,
+        preco: produto.preco,
+        observacao: produto.observacao,
+        imagem: produto.imagem
+      });
+      setEditandoId(id);
+    }
   };
 
-  const salvarEdicao = (id: number, novosDados: Partial<Produto>) => {
+  const handleEditChange = (field: keyof Produto, value: any) => {
+    setEditValues(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, id: number) => {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          handleEditChange('imagem', event.target.result.toString());
+        }
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+  const salvarEdicao = (id: number) => {
     const novosProdutos = produtosCadastrados.map(produto => 
-      produto.id === id ? { ...produto, ...novosDados } : produto
+      produto.id === id ? { ...produto, ...editValues } : produto
     );
 
     setProdutosCadastrados(novosProdutos);
@@ -130,11 +160,34 @@ const ItensPage = () => {
                   <div className="imagem-cardstack">
                     <span className="img__cardstack">
                       <img 
-                        src={produto.imagem} 
+                        src={editandoId === produto.id ? editValues.imagem || produto.imagem : produto.imagem} 
                         alt={produto.nome} 
                         decoding="async" 
                         className="propria__imagem-menu" 
                       />
+                      {editandoId === produto.id && (
+                        <label style={{
+                          cursor: 'pointer',
+                          position: 'absolute',
+                          right: '10px',
+                          top: '10px',
+                          background: 'rgba(255,255,255,0.7)',
+                          padding: '5px',
+                          borderRadius: '50%'
+                        }}>
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            style={{ display: 'none' }} 
+                            onChange={(e) => handleImageChange(e, produto.id)}
+                          />
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4285F4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icone-upload">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                          </svg>
+                        </label>
+                      )}
                     </span>
                   </div>
                   <div className="menu__content">
@@ -143,9 +196,9 @@ const ItensPage = () => {
                         {editandoId === produto.id ? (
                           <input 
                             type="text" 
-                            defaultValue={produto.nome}
+                            value={editValues.nome || ''}
                             className="edit-input"
-                            onChange={(e) => salvarEdicao(produto.id, { nome: e.target.value })}
+                            onChange={(e) => handleEditChange('nome', e.target.value)}
                           />
                         ) : (
                           <span className="menu__nome">{produto.nome}</span>
@@ -155,9 +208,9 @@ const ItensPage = () => {
                     <div className="menu__informação">
                       {editandoId === produto.id ? (
                         <textarea 
-                          defaultValue={produto.descricao}
+                          value={editValues.descricao || ''}
                           className="edit-textarea"
-                          onChange={(e) => salvarEdicao(produto.id, { descricao: e.target.value })}
+                          onChange={(e) => handleEditChange('descricao', e.target.value)}
                         />
                       ) : (
                         <span className="menu-descrição">{produto.descricao}</span>
@@ -168,9 +221,9 @@ const ItensPage = () => {
                         <input 
                           type="number" 
                           step="0.01"
-                          defaultValue={produto.preco}
+                          value={editValues.preco || 0}
                           className="edit-input"
-                          onChange={(e) => salvarEdicao(produto.id, { preco: parseFloat(e.target.value) })}
+                          onChange={(e) => handleEditChange('preco', parseFloat(e.target.value))}
                         />
                       ) : (
                         <span className="menu__valores">R$ {produto.preco.toFixed(2)}</span>
@@ -179,9 +232,9 @@ const ItensPage = () => {
                     <div className="menu__observação">
                       {editandoId === produto.id ? (
                         <textarea 
-                          defaultValue={produto.observacao}
+                          value={editValues.observacao || ''}
                           className="edit-textarea"
-                          onChange={(e) => salvarEdicao(produto.id, { observacao: e.target.value })}
+                          onChange={(e) => handleEditChange('observacao', e.target.value)}
                         />
                       ) : (
                         <span className="menu__detalhes">{produto.observacao}</span>
@@ -191,12 +244,16 @@ const ItensPage = () => {
                   <div className="menu-fornecedores-lista__icone-item">
                     <button 
                       className="editar-btn" 
-                      onClick={() => editandoId === produto.id ? setEditandoId(null) : iniciarEdicao(produto.id)}
+                      onClick={() => editandoId === produto.id ? salvarEdicao(produto.id) : iniciarEdicao(produto.id)}
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icone-editar">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                      </svg>
+                      {editandoId === produto.id ? (
+                        'Salvar'
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icone-editar">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                      )}
                     </button>
                     <button 
                       className="favorito-btn" 
