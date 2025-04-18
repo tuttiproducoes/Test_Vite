@@ -1,4 +1,4 @@
-/* src/components/OrcamentoPage.css */
+/* Estilos específicos para a página de orçamento */
 .resumo-orcamento {
     background-color: white;
     padding: 20px;
@@ -11,6 +11,8 @@
 .item-orcamento:last-child {
     border-bottom: none;
 }
+
+/* Adicionar ao arquivo existente */
 
 .item-orcamento {
     display: flex;
