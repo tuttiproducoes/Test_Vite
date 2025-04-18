@@ -46,8 +46,8 @@ const ItensPage = () => {
   ];
 
   useEffect(() => {
-    const produtos = JSON.parse(localStorage.getItem('produtos') || [];
-    const favs = JSON.parse(localStorage.getItem('favoritos') || [];
+    const produtos = JSON.parse(localStorage.getItem('produtos') || '[]');
+    const favs = JSON.parse(localStorage.getItem('favoritos') || '[]');
     setProdutosCadastrados(produtos);
     setFavoritos(favs);
   }, []);
