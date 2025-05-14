@@ -33,22 +33,22 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className="App" style={{ display: 'flex' }}>
       <div style={{ 
-        position: 'fixed', 
-        bottom: '20px', 
-        right: '20px', 
-        zIndex: 1000, 
-        display: 'flex', 
-        gap: '10px',
-        flexWrap: 'wrap',
-        justifyContent: 'flex-end'
+        width: '60px',
+        backgroundColor: '#222',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        paddingTop: '20px',
+        gap: '20px'
       }}>
         <button 
           onClick={() => setCurrentPage('client')}
           style={{ 
             padding: '10px', 
-            background: currentPage === 'client' ? '#333' : '#000', 
+            background: currentPage === 'client' ? '#333' : 'transparent', 
             color: '#fff',
             border: 'none',
             borderRadius: '4px',
@@ -65,7 +65,7 @@ function App() {
           onClick={() => setCurrentPage('product')}
           style={{ 
             padding: '10px', 
-            background: currentPage === 'product' ? '#333' : '#000', 
+            background: currentPage === 'product' ? '#333' : 'transparent', 
             color: '#fff',
             border: 'none',
             borderRadius: '4px',
@@ -82,7 +82,7 @@ function App() {
           onClick={() => setCurrentPage('items')}
           style={{ 
             padding: '10px', 
-            background: currentPage === 'items' ? '#333' : '#000', 
+            background: currentPage === 'items' ? '#333' : 'transparent', 
             color: '#fff',
             border: 'none',
             borderRadius: '4px',
@@ -99,7 +99,7 @@ function App() {
           onClick={() => setCurrentPage('budget')}
           style={{ 
             padding: '10px', 
-            background: currentPage === 'budget' ? '#333' : '#000', 
+            background: currentPage === 'budget' ? '#333' : 'transparent', 
             color: '#fff',
             border: 'none',
             borderRadius: '4px',
@@ -114,10 +114,12 @@ function App() {
         </button>
       </div>
       
-      {currentPage === 'client' && <FormClient />}
-      {currentPage === 'product' && <CadastroProduto />}
-      {currentPage === 'items' && <ItensPage />}
-      {currentPage === 'budget' && <OrcamentoPage />}
+      <div style={{ flex: 1 }}>
+        {currentPage === 'client' && <FormClient />}
+        {currentPage === 'product' && <CadastroProduto />}
+        {currentPage === 'items' && <ItensPage />}
+        {currentPage === 'budget' && <OrcamentoPage />}
+      </div>
     </div>
   );
 }
