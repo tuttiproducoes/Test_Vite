@@ -135,6 +135,19 @@ const ItensPage = () => {
 
   return (
     <>
+      <section className="cabecalho-superior-mobile">
+        <div className="container-superior">
+          <ul className="categoria-superior-mobile">
+            <li onClick={() => setCategoriaSelecionada('Buffet americano')}>buffet</li>
+            <li>garçons</li>
+            <li>decoração</li>
+            <li>bar</li>
+            <li>cerimonialista</li>
+            <li>maître</li>
+          </ul>
+        </div>
+      </section>
+
       <section className="cabeçalho-inicial-mobile">
         <div className="container">
           <ul className="seleção-de-categoria-mobile">
